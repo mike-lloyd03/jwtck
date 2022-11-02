@@ -9,7 +9,9 @@ This tools reads from stdin and prints out colorized json output.
 
 ```bash
 cat file.jwt | jwtck
+```
 
+```json
 {
   "header": {
     "alg": "HS256",
