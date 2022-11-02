@@ -1,6 +1,7 @@
 use std::io::stdin;
 
 mod decode;
+mod verify;
 
 use decode::{print_colored, read_jwt};
 

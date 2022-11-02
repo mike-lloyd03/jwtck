@@ -9,5 +9,8 @@ edition = "2021"
 anyhow = "1.0.66"
 base64 = "0.13.1"
 colored_json = "3.0.1"
+hex-literal = "0.3.4"
+hmac = "0.12.1"
 serde = { version = "1.0.147", features = ["derive"] }
 serde_json = "1.0.87"
+sha2 = "0.10.6"
