@@ -1,4 +1,4 @@
-# Jason Web Token Check
+# JSON Web Token Check
 
 Simple CLI tool to parse a JWT and print it's contents to the terminal.
 
