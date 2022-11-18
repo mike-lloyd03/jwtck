@@ -2,7 +2,7 @@ use anyhow::{bail, Result};
 use serde_json::{json, Value};
 
 fn get_parts(jwt: &str) -> Result<Vec<String>> {
-    let parts: Vec<String> = jwt.split(".").map(|s| s.to_string()).collect();
+    let parts: Vec<String> = jwt.split('.').map(|s| s.to_string()).collect();
     if parts.len() != 3 {
         bail!("JWT has invalid length")
     }
@@ -29,7 +29,7 @@ pub fn read_jwt(jwt: &str) -> Result<Value> {
 }
 
 pub fn print_colored(jwt: Value) {
-    let output = colored_json::to_colored_json_auto(&jwt).unwrap_or("".into());
+    let output = colored_json::to_colored_json_auto(&jwt).unwrap_or_else(|_| "".into());
 
     println!("{}", output);
 }
@@ -41,10 +41,10 @@ mod tests {
     use anyhow::Result;
     use serde_json::json;
 
-    static JWT_HEADER: &'static str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
-    static JWT_PAYLOAD: &'static str =
+    static JWT_HEADER: &str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
+    static JWT_PAYLOAD: &str =
         "eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ";
-    static JWT_SIGNATURE: &'static str = "SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+    static JWT_SIGNATURE: &str = "SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
     #[test]
     fn test_get_parts() -> Result<()> {
