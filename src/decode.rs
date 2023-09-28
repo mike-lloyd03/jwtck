@@ -1,4 +1,5 @@
 use anyhow::{bail, Result};
+use chrono::{DateTime, Local};
 use serde_json::{json, Value};
 
 fn get_parts(jwt: &str) -> Result<Vec<String>> {
@@ -19,13 +20,29 @@ fn decode_part(part: &str) -> Result<Value> {
 pub fn read_jwt(jwt: &str) -> Result<Value> {
     let parts = get_parts(jwt)?;
     let header = decode_part(&parts[0])?;
-    let payload = decode_part(&parts[1])?;
+    let mut payload = decode_part(&parts[1])?;
+
+    convert_unix_time(&mut payload, "iat");
+    convert_unix_time(&mut payload, "exp");
+    convert_unix_time(&mut payload, "nbf");
 
     let jwt_decoded = json!({
         "header": header,
         "payload": payload,
     });
     Ok(jwt_decoded)
+}
+
+/// Converts the given `key` field from a unix timestamp to a local date string
+fn convert_unix_time(payload: &mut Value, key: &str) {
+    if let Some(iat) = payload.get_mut(key) {
+        if let Some(iat_i64) = iat.as_i64() {
+            if let Some(dt) = DateTime::from_timestamp(iat_i64, 0) {
+                let localtime: DateTime<Local> = dt.into();
+                *iat = serde_json::json!(localtime.to_string())
+            }
+        }
+    }
 }
 
 pub fn print_colored(jwt: Value) {
@@ -48,7 +65,7 @@ mod tests {
 
     #[test]
     fn test_get_parts() -> Result<()> {
-        let good_jwt = vec![JWT_HEADER, JWT_PAYLOAD, JWT_SIGNATURE].join(".");
+        let good_jwt = [JWT_HEADER, JWT_PAYLOAD, JWT_SIGNATURE].join(".");
 
         let parts = get_parts(&good_jwt)?;
 
